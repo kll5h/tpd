@@ -1,0 +1,11 @@
+/build/
+*.iml
+/bin/
+/.classpath
+/.springBeans
+/.project
+/.settings/
+/*.wallet
+/*.spvchain
+/*.tmp
+/.gradle/

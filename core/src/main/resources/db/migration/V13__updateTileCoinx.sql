@@ -1,0 +1,1 @@
+update CURRENCY set name = 'TILECOINXTC' WHERE ID = 2;

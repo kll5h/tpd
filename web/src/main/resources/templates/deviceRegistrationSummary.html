@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+	<div th:fragment="deviceRegistrationSummary">
+	
+	<h3 th:text="#{deviceRegistrationForm.title}"></h3>
+	
+		<table class="table">
+		  	<tr>
+			  	<th class="col-xs-3" th:text="#{deviceRegistrationForm.name}"></th>
+			  	<td th:text="${deviceRegistrationForm.name}"></td>
+		  	</tr>
+		  	<tr>
+			  	<th th:text="#{deviceRegistrationForm.IPAddress}"></th>
+			  	<td th:text="${deviceRegistrationForm.IPAddress}"></td>
+		  	</tr>
+		  	<tr>
+			  	<th th:text="#{deviceRegistrationForm.BTCaddress}"></th>
+			  	<td th:text="${deviceRegistrationForm.BTCaddress}"></td>
+		  	</tr>
+		</table>
+	
+		<form id="deviceRegistrationBack" class="form-horizontal" th:action="@{/wallet}" th:object="${deviceRegistrationForm}"  role="form" method="POST">
+				<div class="col-xs-offset-5">
+					<button type="submit" id="back" class="btn btn-default" th:text="#{deviceRegistrationForm.button.back}"></button>
+				</div>
+		</form>
+	
+	</div>
+</html>

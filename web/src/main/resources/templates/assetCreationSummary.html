@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<div th:fragment="assetCreationSummary">
+
+    <div th:replace="alert::alertSuccess('createAssetTxSuccessAlert')"></div>
+    <div th:replace="alert::alertSuccess('feeTxSuccessAlert')"></div>
+    <div th:replace="alert::alertDanger('feeTxFailureAlert')"></div>
+
+    <h3 th:text="#{assetIssuanceForm.title}"></h3>
+
+    <table class="table">
+        <tr>
+            <th class="col-xs-3" th:text="#{assetIssuanceForm.assetName}"></th>
+            <td th:text="${assetIssuanceForm.assetName}"></td>
+        </tr>
+        <tr>
+            <th th:text="#{assetIssuanceForm.quantity}"></th>
+            <td th:text="${assetIssuanceForm.quantity}"></td>
+        </tr>
+        <tr>
+            <th th:text="#{assetIssuanceForm.divisible}"></th>
+            <td><input type="checkbox" onclick="return false" th:checked="${assetIssuanceForm.divisible}"></input></td>
+        </tr>
+    </table>
+
+    <form id="assetCreationBack" class="form-horizontal" th:action="@{/wallet}" th:object="${assetIssuanceForm}"  role="form" method="POST">
+        <div class="col-xs-offset-5">
+            <button type="submit" id="back" class="btn btn-default" th:text="#{transactionForm.button.back}"></button>
+        </div>
+    </form>
+		
+		
+	</div>	
+
+</html>

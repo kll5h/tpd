@@ -1,0 +1,1 @@
+include "domain", "protocol", "daemon", "core", "web", "common_client", "counterparty_client", "uphold_client", "acceptance-tests", "IoTClient"

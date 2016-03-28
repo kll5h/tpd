@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="content">
+    <div class="alert alert-danger" role="alert" th:text="${#httpServletRequest.getAttribute('technicalError')}"></div>
+</div>
+
+</html>

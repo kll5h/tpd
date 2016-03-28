@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    
+    <!-- favicon -->
+    <link th:href="@{/images/favicon.ico}" type="image/x-icon" rel="shortcut icon"/>
+    
+    <!-- css begin -->
+    <!-- bootstrap -->
+    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" rel="stylesheet" media="screen" />
+    
+    <!-- font-awesome -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" />
+    
+    <!-- datatables -->
+    <link href="//cdn.datatables.net/1.10.8/css/dataTables.bootstrap.min.css" rel="stylesheet" media="screen" />
+    <link href="//cdn.datatables.net/tabletools/2.2.4/css/dataTables.tableTools.min.css" rel="stylesheet" media="screen" />
+    <link th:href="@{/components/Editor-1.4.2/css/dataTables.editor.min.css}" rel="stylesheet" media="screen" />
+    
+    <!-- select2 -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" media="screen" />
+    <link href="//cdn.bootcss.com/select2-bootstrap-css/1.4.6/select2-bootstrap.min.css" rel="stylesheet" media="screen" />
+    
+    <!-- customer -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet" media="screen" />
+    <link th:href="@{/css/uphold.css}" rel="stylesheet" media="screen" />
+    
+    <!-- css end -->
+    
+    <!-- js begin -->
+    <!-- jquery -->
+    <script src="//code.jquery.com/jquery-1.11.3.min.js" type="text/javascript"></script>
+    
+    <!-- bootstrap -->
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js" type="text/javascript"></script>
+    
+    <!-- datatables -->
+    <script src="//cdn.datatables.net/1.10.8/js/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="//cdn.datatables.net/tabletools/2.2.4/js/dataTables.tableTools.min.js"></script>
+    <script th:src="@{/components/Editor-1.4.2/js/dataTables.editor.min.js}" type="text/javascript"></script>
+    <script src="//cdn.datatables.net/1.10.8/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+    
+    <!-- jquery-validate -->
+    <script src="//cdn.bootcss.com/jquery-validate/1.14.0/jquery.validate.min.js" type="text/javascript"></script>
+
+    <!-- select2 -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js" type="text/javascript"></script>
+    
+    <!-- jquery-dateFormat -->
+    <script src="//cdn.bootcss.com/jquery-dateFormat/1.0/jquery.dateFormat.min.js" type="text/javascript"></script>
+    
+    <!-- bignumber -->
+    <script src="//cdn.bootcss.com/bignumber.js/2.0.7/bignumber.min.js" type="text/javascript"></script>
+    
+    <!-- customer -->
+    <!-- en -->
+    <script th:if="#{messages.lang} == 'en'" th:src="@{/js/scripts.js}" type="text/javascript"></script>
+    <script th:if="#{messages.lang} == 'en'" th:src="@{/js/uphold.common.js}" type="text/javascript"></script>
+	<script th:if="#{messages.lang} == 'en'" th:src="@{/js/uphold.cards.js}" type="text/javascript"></script>
+	<script th:if="#{messages.lang} == 'en'" th:src="@{/js/uphold.transactions.js}" type="text/javascript"></script>
+	<script th:if="#{messages.lang} == 'en'" th:src="@{/js/uphold.tickers.js}" type="text/javascript"></script>
+	<script th:if="#{messages.lang} == 'en'" th:src="@{/js/uphold.contacts.js}" type="text/javascript"></script>
+	<script th:if="#{messages.lang} == 'en'" th:src="@{/js/uphold.render.js}" type="text/javascript"></script>
+    
+    <!-- zh_cn -->
+    <script th:if="#{messages.lang} == 'zh_cn'" th:src="@{/js/zh_cn/language.js}" type="text/javascript"></script>
+    <script th:if="#{messages.lang} == 'zh_cn'" th:src="@{/js/zh_cn/scripts.js}" type="text/javascript"></script>
+    <script th:if="#{messages.lang} == 'zh_cn'" th:src="@{/js/zh_cn/uphold.common.js}" type="text/javascript"></script>
+	<script th:if="#{messages.lang} == 'zh_cn'" th:src="@{/js/zh_cn/uphold.cards.js}" type="text/javascript"></script>
+	<script th:if="#{messages.lang} == 'zh_cn'" th:src="@{/js/zh_cn/uphold.transactions.js}" type="text/javascript"></script>
+	<script th:if="#{messages.lang} == 'zh_cn'" th:src="@{/js/zh_cn/uphold.tickers.js}" type="text/javascript"></script>
+	<script th:if="#{messages.lang} == 'zh_cn'" th:src="@{/js/zh_cn/uphold.contacts.js}" type="text/javascript"></script>
+	<script th:if="#{messages.lang} == 'zh_cn'" th:src="@{/js/zh_cn/uphold.render.js}" type="text/javascript"></script>
+    
+    <!-- js end -->
+    
+    <title>Tilepay</title>
+</head>
+
+<body>
+<input th:id="messages_lang" th:type="hidden" th:value="#{messages.lang}"/>
+<!--<div class="container" th:if="${#httpServletRequest.getAttribute('technicalError')} == null">-->
+<div class="container">
+    <div th:if="${view} != login and ${view} != createNewAccount">
+
+        <link th:href="@{/css/justified-nav.css}" rel="stylesheet" media="screen" />
+
+        <div th:replace="header :: content"></div>
+        <div th:if="${#httpServletRequest.getAttribute('technicalError')} == null" th:replace="${view} :: content"></div>
+
+        <div>
+            <br/>
+            <br/>
+            <div th:if="${#httpServletRequest.getAttribute('technicalError')}" class="alert alert-danger" role="alert" th:text="${#httpServletRequest.getAttribute('technicalError')}"></div>
+        </div>
+
+        <div th:replace="footer :: content"></div>
+
+        <style>
+            body {
+                background-image: url('/images/tilepay_background.png');
+                background-repeat: no-repeat;
+                background-position: center top;
+                display: compact;
+            }
+        </style>
+    </div>
+    <div th:if="${view} == login or ${view} == createNewAccount">
+        <div th:replace="${view} :: content"></div>
+    </div>
+
+</div>
+
+</body>
+
+</html>

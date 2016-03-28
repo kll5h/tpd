@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<div th:fragment="deviceRegistration">
+
+	<form id="assetCreation" class="form-horizontal" th:action="@{/wallet/registerDevice}" th:object="${deviceRegistrationForm}"  role="form" method="POST">
+	<div class="form-group">
+	</div>
+			
+			<div class="form-group">
+				<div th:each="err : ${#fields.globalErrors()}" class="alert alert-danger" role="alert" th:text="${err}"></div>
+			</div>
+	
+			<div class="form-group">
+				<label for="name" class="control-label col-xs-3" th:text="#{deviceRegistrationForm.name}"></label>
+				<div class="col-md-6 col-xs-8">
+					<input type="text" th:field="*{name}" class="form-control"/>
+					<span id="errorAssetName" class="errorMessage" th:errors="*{name}"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="IPAddress" class="control-label col-xs-3" th:text="#{deviceRegistrationForm.IPAddress}"></label>
+				<div class="col-md-6 col-xs-8">
+					<input type="text" th:field="*{IPAddress}" class="form-control"/>
+					<span id="errorIPAddress" class="errorMessage" th:errors="*{IPAddress}"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="password" class="control-label col-xs-3" th:text="#{deviceRegistrationForm.password}"></label>
+				<div class="col-md-6 col-xs-8">
+					<input type="password" th:field="*{password}" class="form-control" autocomplete="off"/>
+					<span id="errorPassword" class="errorMessage" th:errors="*{password}"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-xs-3"></div>
+				<div class="col-md-6 col-xs-8">
+					<span th:text="#{deviceRegistrationForm.feeInfo}"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-xs-offset-3">
+					<button type="submit" id="save" class="btn btn-primary" th:text="#{deviceRegistrationForm.register}"></button>
+				</div>
+			</div>
+		</form>
+
+	
+	</div>
+
+</html>

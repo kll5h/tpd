@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+	<div th:fragment="content">
+		<h2 th:text="#{companyProfile.title}"></h2>
+		<div class="form-group">
+			<label for="importData" th:text="#{companyProfile.importFrom}"></label>
+			<select>
+				<option>Coinbase</option>
+			</select>
+			<button class="btn btn-success disabled" th:text="#{companyProfile.button.import}">
+			</button>
+		</div>
+
+		<div th:include="profileHeader :: header" ></div>
+
+		<div class="row">
+			<!-- Navigation Buttons -->
+			<div class="col-md-3">
+				<ul class="nav nav-pills nav-stacked" id="myTabs">
+					<li th:class="${activeTab == 'PUBLIC' ? 'active' : ''}">
+						<a id="publicTab" href="#public" data-toggle="tab"><i class="fa fa-eye fa-2x"></i> &nbsp; <span th:text="#{companyProfile.tab.public}"></span></a>
+					</li>
+					<li th:class="${activeTab == 'PRIVATE' ? 'active' : ''}">
+						<a id="privateTab" href="#private" data-toggle="tab"><i class="fa fa-eye-slash fa-2x"></i> &nbsp; <span th:text="#{companyProfile.tab.private}"></span></a>
+					</li>
+					<li th:class="${activeTab == 'CONTACT' ? 'active' : ''}">
+						<a id="contactTab" href="#contact" data-toggle="tab"><i class="fa fa-tty fa-2x"></i> &nbsp; <span th:text="#{companyProfile.tab.contact}"></span></a>
+					</li>
+					<li th:class="${activeTab == 'PERMISSIONS' ? 'active' : ''}">
+						<a id="permissionsTab" href="#permissions" data-toggle="tab"><i class="fa fa-key fa-2x"></i> &nbsp; <span th:text="#{companyProfile.tab.permissions}"></span></a>
+					</li>
+				</ul>
+			</div>
+
+				<div id="page-content-wrapper">
+					<div class="container-fluid">
+						<div class="row tab-content col-md-9">
+						
+							<div th:class="${activeTab} == 'PUBLIC'? tab-pane+' '+active : tab-pane" id="public">
+						    <form class="form-horizontal" th:action="@{/profile/company/public}" th:object="${companyPublicDetails}" role="form" method="POST">
+	                <div class="alert alert-success fade in" role="alert" th:if="${publicDetailsSaveSuccess}">
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                    <span th:text="#{profile.tab.public.save.success}"></span>
+                  </div>
+<!-- 									<div class="form-group"> -->
+<!-- 										<label class="control-label col-xs-3"></label> -->
+<!-- 										<div class="col-xs-9" style="font-size: 20px; color:red;"> -->
+<!-- 											<div th:if="${#fields.hasErrors('*')}" th:text="#{companyProfile.errorMessage}"> -->
+<!-- 											</div> -->
+<!-- 										</div> -->
+<!-- 									</div> -->
+									<!-- Update success message -->
+									<div class="alert alert-success" th:if="${saved} == true">
+	            						<button type="button" class="close" data-dismiss="alert">&times;</button>
+										<span th:utext="#{companyProfile.save.success}"></span>                       	    
+									</div>
+									<h2 th:text="#{companyProfile.tab.header.public}"></h2>
+									<div class="form-group">
+										<label for="companyName" class="control-label col-xs-3" th:text="#{companyProfile.companyName}"></label>
+										<div class="col-xs-9">
+											<input type="text" th:field="*{companyName}" placeholder="" class="form-control"/>
+											<span id="errorCompanyName" class="errorMessage" th:errors="*{companyName}"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="address" class="control-label col-xs-3" th:text="#{companyProfile.address}"></label>
+										<div class="col-xs-9">
+											<textarea th:field="*{address}" placeholder="" class="form-control"></textarea>
+											<span id="errorAddress" class="errorMessage" th:errors="*{address}"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="city" class="control-label col-xs-3" th:text="#{companyProfile.city}"></label>
+										<div class="col-xs-9">
+											<input type="text" th:field="*{city}" placeholder="" class="form-control"/>
+											<span id="errorCity" class="errorMessage" th:errors="*{city}"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="state" class="control-label col-xs-3" th:text="#{companyProfile.state}"></label>
+										<div class="col-xs-9">
+											<input type="text" th:field="*{state}" placeholder="" class="form-control"/>
+											<span id="errorState" class="errorMessage" th:errors="*{state}"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="zip" class="control-label col-xs-3" th:text="#{companyProfile.zip}"></label>
+										<div class="col-xs-9">
+											<input type="text" th:field="*{zip}" placeholder="" class="form-control"/>
+											<span id="errorZip" class="errorMessage" th:errors="*{zip}"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="country" class="control-label col-xs-3" th:text="#{companyProfile.country}"></label>
+										<div class="col-xs-9" th:include="country"></div>
+									</div>
+									<div class="form-group">
+										<label for="presence" class="control-label col-xs-3" th:text="#{companyProfile.presence}"></label>
+										<div class="col-xs-9 form-inline">
+											  <div th:each="presenceType : ${presenceTypeList}" class="radio">
+				                  <input type="radio" th:field="*{presenceType}" th:value="${presenceType}" />
+				                  <label th:for="${#ids.prev('presenceType')}" th:text="#{'companyProfile.presenceType.'+${presenceType}}"></label>
+                        </div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="caption" class="control-label col-xs-3" th:text="#{companyProfile.caption}"></label>
+										<div class="col-xs-9">
+											<input type="text" th:field="*{caption}" placeholder="" class="form-control"/>
+											<span id="errorCaption" class="errorMessage" th:errors="*{caption}"></span>
+										</div>
+									</div>
+		              <div class="col-xs-offset-3">
+		                <button id="savePublic" type="submit" class="btn btn-primary" th:text="#{profile.button.save}"></button>
+		              </div>
+								</form>
+							</div>
+
+							<div th:class="${activeTab} == 'PRIVATE'? tab-pane+' '+active : tab-pane" id="private">
+							  <form class="form-horizontal" th:action="@{/profile/company/private}" th:object="${companyPrivateDetails}" role="form" method="POST">
+							  
+<!-- 									<div class="form-group"> -->
+<!-- 										<label for="merchantId" class="control-label col-xs-3" th:text="#{companyProfile.merchantID}"></label> -->
+<!-- 										<div class="col-xs-9"> -->
+<!-- 											<input type="text" th:field="*{merchantId}" placeholder="" class="form-control"/> -->
+<!-- 											<span class="errorMessage"  th:if="${#fields.hasErrors('merchantId')}" th:text="#{companyProfile.merchantIDError}"></span> -->
+<!-- 										</div> -->
+<!-- 									</div> -->
+                  <div class="alert alert-success fade in" role="alert" th:if="${privateDetailsSaveSuccess}">
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                    <span th:text="#{companyProfile.tab.private.save.success}"></span>
+                  </div>
+                  <h2 th:text="#{companyProfile.tab.header.private}"></h2>
+									<div class="form-group">
+										<label for="companyType" class="control-label col-xs-3" th:text="#{companyProfile.companyType}"></label>
+										<div class="col-xs-9">
+											<input type="text" th:field="*{companyType}" placeholder="" class="form-control"/>
+											<span id="errorCompanyType" class="errorMessage" th:errors="*{companyType}"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="companyCategory" class="control-label col-xs-3" th:text="#{companyProfile.companyCategory}"></label>
+										<div class="col-xs-9">
+											<select th:field="*{companyCategory}" class="form-control">
+												<option value="" th:text="#{companyProfile.selectType}"></option>
+												<option th:each="companyCategory : ${companyCategoryList}" th:value="${companyCategory}" th:text="${companyCategory}"></option>
+											</select>
+										</div>
+									</div>
+								<div class="form-group">
+									<label for="companyTaxIdType" class="control-label col-xs-3" th:text="#{companyProfile.companyTaxIDType}"></label>
+									<div class="col-xs-9">
+										<select th:field="*{taxIdType}" class="form-control">
+											<option value="" th:text="#{companyProfile.selectType}"></option>
+											<option th:each="taxIdType : ${taxIdTypeList}" th:value="${taxIdType}" th:text="${taxIdType}"></option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="companyTaxId" class="control-label col-xs-3" th:text="#{companyProfile.companyTaxID}"></label>
+									<div class="col-xs-9">
+										<input type="text" th:field="*{taxId}" placeholder="" class="form-control"/>
+										<span id="errorTaxId" class="errorMessage" th:errors="*{taxId}"></span>
+									</div>
+								</div>
+                  <div class="col-xs-offset-3">
+                    <button id="savePrivate" type="submit" class="btn btn-primary" th:text="#{profile.button.save}"></button>
+                  </div>
+                </form>
+							</div>
+
+							<div th:class="${activeTab} == 'CONTACT'? tab-pane+' '+active : tab-pane" id="contact">
+                <form class="form-horizontal" th:action="@{/profile/company/contact}" th:object="${companyContact}" role="form" method="POST">
+                   <div class="alert alert-success fade in" role="alert" th:if="${contactDetailsSaveSuccess}">
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                    <span th:text="#{companyProfile.tab.contact.save.success}"></span>
+                  </div>
+                  <h2 th:text="#{companyProfile.tab.header.contact}"></h2>
+									<div class="form-group">
+										<label for="companyType" class="control-label col-xs-3" th:text="#{companyProfile.firstName}"></label>
+										<div class="col-xs-9">
+											<input type="text" th:field="*{firstName}" placeholder="" class="form-control"/>
+											<span id="errorFirstName" class="errorMessage" th:errors="*{firstName}"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="lastName" class="control-label col-xs-3" th:text="#{companyProfile.lastName}"></label> 
+										<div class="col-xs-9">
+											<input type="text" th:field="*{lastName}" placeholder="" class="form-control"/>
+											<span id="errorLastName" class="errorMessage" th:errors="*{lastName}"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="email" class="control-label col-xs-3" th:text="#{companyProfile.email}"></label>
+										<div class="col-xs-9">
+											<input type="text" th:field="*{email}" placeholder="" class="form-control"/>
+											<span id="errorEmail" class="errorMessage" th:errors="*{email}"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="phone" class="control-label col-xs-3" th:text="#{companyProfile.phone}"></label>
+										<div class="col-xs-9">
+											<input type="text" th:field="*{phone}" placeholder="" class="form-control"/>
+											<span id="errorPhone" class="errorMessage" th:errors="*{phone}"></span>
+										</div>
+									</div>
+                  <div class="col-xs-offset-3">
+                    <button id="save" type="submit" class="btn btn-primary" th:text="#{profile.button.save}"></button>
+                  </div>
+								</form>
+							</div>
+
+							<div class="tab-pane" id="permissions">
+                <form class="form-horizontal" th:action="@{/profile/company/permissions}" th:object="${companyContact}" role="form" method="POST">
+							
+								<!-- TODO: add permissions to model first
+								<div class="form-group">
+								<label for="permissions" class="control-label col-xs-3">Permissions</label>
+								<div class="col-xs-9">
+								<input type="text" th:field="*{permissions}" placeholder="" class="form-control"/>
+								<span class="errorMessage"  th:if="${#fields.hasErrors('permissions')}">please add permissions</span>
+								</div>
+								</div>
+								-->
+								  <img alt="" src="http://www.soulspa.com/wp-content/uploads/coming-soon.png" />
+                  <div class="col-xs-offset-3">
+                    <button id="save" type="submit" class="btn btn-primary disabled" th:text="#{profile.button.save}"></button>
+                  </div>
+								</form>
+							</div>
+
+						</div>
+					</div>
+		</div>
+	 </div>
+	</div>
+</html>

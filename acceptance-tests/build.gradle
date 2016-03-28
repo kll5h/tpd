@@ -1,0 +1,8 @@
+dependencies {
+    compile project(':core')
+    testCompile ("org.seleniumhq.selenium:selenium-java:2.47.1") {
+        exclude group: 'commons-logging'
+        //exclude group: 'org.eclipse.jetty'
+    }
+    testCompile 'org.seleniumhq.selenium.client-drivers:selenium-java-client-driver:1.0.2'
+}

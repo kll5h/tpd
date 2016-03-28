@@ -1,0 +1,32 @@
+@CHARSET "UTF-8";
+td.details-control {
+    background: rgba(0, 0, 0, 0) url("../images/uphold/details_open.png") no-repeat scroll center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: rgba(0, 0, 0, 0) url("../images/uphold/details_close.png") no-repeat scroll center center;
+}
+.table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
+    vertical-align: middle;
+    font-size: 12px;
+}
+li.divider {
+    background-color: #f5f1f7;
+    height: 1px;
+    margin: 0.625rem 0.3125rem;
+}
+.text-pending {
+	color: black;
+}
+.text-processing {
+	color: black;
+}
+.text-waiting {
+	color: orange;
+}
+.text-cancelled {
+	color: red;
+}
+.text-completed {
+	color: green;
+}

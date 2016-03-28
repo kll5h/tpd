@@ -1,0 +1,64 @@
+package com.tilepay.protocol.model;
+
+import static javax.persistence.GenerationType.AUTO;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
+//TODO: 10.12.2014 Andrei Sljusar: entity?
+//TODO: 10.12.2014 Andrei Sljusar: length
+@Entity
+public class Issuance {
+
+    @Id
+    @GeneratedValue(strategy = AUTO)
+    private Long id;
+
+    //TODO: 11.12.2014 Andrei Sljusar: get message id on parse and decide message type
+    @Transient
+    private Integer messageId = 20;
+
+    //TODO: 10.12.2014 Andrei Sljusar: create Asset entity
+    private String asset;
+
+    //TODO: 10.12.2014 Andrei Sljusar: common for all messages
+    @Transient
+    private byte[] data;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getAsset() {
+        return asset;
+    }
+
+    public void setAsset(String asset) {
+        this.asset = asset;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    //TODO: 10.12.2014 Andrei Sljusar: common method for all messages
+
+    public Integer getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(Integer messageId) {
+        this.messageId = messageId;
+    }
+
+    //TODO: 10.12.2014 Andrei Sljusar: common method for all messages
+    public Integer getLength() {
+        return 12;
+    }
+}

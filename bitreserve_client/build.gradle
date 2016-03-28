@@ -1,0 +1,6 @@
+dependencies {
+    compile "com.google.code.gson:gson:${gsonVersion}"
+    compile "commons-codec:commons-codec:1.10"
+    compile "org.apache.httpcomponents:httpclient:${httpclientVersion}"
+    compile "org.hibernate:hibernate-validator:${hibernateValidatorVersion}"
+}

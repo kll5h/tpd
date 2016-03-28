@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<select th:field="*{country}" class="form-control" th:fragment="country">
+		<option value="" th:text="#{country.countrySelect}"><i></i></option>
+		<option th:each="country : ${countryList}" th:value="${country.id}" th:text="${country.name}"></option>
+	</select>
+
+</html>

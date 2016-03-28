@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<div th:fragment="assetList">
+		<table class="table table-bordered">
+			<tr>
+				<th class="text-center" >Name</th>
+			</tr>
+			<tr th:each="tx: ${issuanceTransactions}">
+				<td class="text-center" th:text="${tx.message.asset.name}"></td>
+			</tr>
+		</table>
+
+		<div th:with="list=${issuanceTransactions}">
+			<div  th:if="${#lists.size(list)} > 0">
+				<form id="payAssetIssuanceFee" role="form" method="POST" th:action="@{/wallet/payFee}" th:object="${transactionForm}">
+					<div class="col-xs-offset-10">
+						<button type="submit" id="payAssetIssuanceFeeButton" class="btn btn-primary" th:text="#{assetIssuanceList.button.payAssetCreationFee}"></button>
+					</div>
+				</form>
+			</div>
+		</div>
+		
+		<br/>
+		<span th:text="#{assetIssuanceList.info}"></span>
+	</div>
+</html>

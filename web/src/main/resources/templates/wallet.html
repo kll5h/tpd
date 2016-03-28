@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="content">
+    <br/>
+    
+    <div th:if="${#httpServletRequest.getAttribute('counterpartyStatus')} != null and ${#httpServletRequest.getAttribute('counterpartyStatus').counterpartyd} == 'NOT_OK'" class="alert alert-danger" role="alert" th:text="#{counterparty.status.notOk}"></div>
+
+    <br/>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a id="balanceTabId" href="#balance" role="tab" data-toggle="tab" class="tab-1"><i class="fa fa-university">&nbsp; </i><span th:utext="#{wallet.tab.balance}"></span></a></li>
+        <!-- COMMENTED OUT 2nd WALLET TABS-->
+        <li th:if="${network=='Testnet'}"><a id="marketsTabId" href="#markets" role="tab" data-toggle="tab" class="tab-1"><i class="fa fa-pie-chart ">&nbsp; </i><span th:utext="#{wallet.tab.market}"></span></a></li>
+        <li><a id="iotTabId" href="#iot" role="tab" data-toggle="tab" class="tab-1"><i class="fa fa-exchange">&nbsp; </i><span th:utext="#{wallet.tab.iot}"></span></a></li>
+        <li><a id="upholdTabId" href="#uphold" role="tab" data-toggle="tab" class="tab-1"><img class="asset-icon" th:src="@{/images/uphold/uphold_icon.png}" height="18"/><span th:utext="#{wallet.tab.uphold}"></span></a></li>
+        <!--<li><a id="billsTabId" href="#bills" role="tab" data-toggle="tab"><i class="fa fa-file-text">&nbsp; </i><span th:utext="#{wallet.tab.bills}"></span></a></li>
+        <li><a id="exchangeTabId" href="#exchange" role="tab" data-toggle="tab"><i class="fa fa-exchange">&nbsp; </i><span th:utext="#{wallet.tab.exchange}"></span></a></li>
+        <li><a id="loansTabId" href="#loans" role="tab" data-toggle="tab"><i class="fa fa-calculator">&nbsp; </i><span th:utext="#{wallet.tab.loans}"></span></a></li>
+        <li><a id="clubTabId" href="#club" role="tab" data-toggle="tab"><i class="fa fa-users">&nbsp; </i><span th:utext="#{wallet.tab.club}"></span></a></li>
+        <li><a id="gatewayTabId" href="#gateway" role="tab" data-toggle="tab"><i class="fa fa-university">&nbsp; </i><span th:utext="#{wallet.tab.gateway}"></span></a></li>-->
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+    <!--<div class="tab-content">-->
+        <div class="tab-pane active" id="balance">
+            <br/><br/>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>#</th>
+                        <th class="text-center" th:text="#{wallet.balancetab.balanceAvailable}">Balance Available</th>
+                        <th class="text-center" th:text="#{wallet.balancetab.balanceEstimated}">Balance Estimated</th>
+                        <th class="text-center" th:text="#{wallet.balancetab.receivingAddress}">Receiving Address</th>
+                        <th class="text-center" th:text="#{wallet.balancetab.privatekey}">Private key</th>
+                    </tr>
+                    <tr>
+                        <td><img class="asset-icon" th:src="@{/images/bitcoin_logo_small.png}" height="15"/>BTC</td>
+                        <td class="text-center" th:text="${wallet.balanceAvailable}"></td>
+                        <td class="text-center" th:text="${wallet.balanceEstimated}"></td>
+                        <td class="text-center" th:rowspan="${#lists.size(balances)+1}" style="vertical-align:middle">
+                            <span id="address" th:text="${wallet.receiveAddress}" draggable="true" ondragstart="drag(event)"></span>
+                            <button class="btn btn-default btn-sm" onclick="selectFieldToCopyAddress()"><i class="fa fa-files-o"></i></button>
+                        </td>
+                        <td class="text-center" th:rowspan="${#lists.size(balances)+1}" style="vertical-align:middle">
+                            <button class="btn btn-default btn-sm private-key-btn" data-toggle="modal" data-target="#passphraseModal">
+                                <i class="fa fa-eye"></i>
+                                <span th:text="#{wallet.button.privateKey}"></span>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr th:each="balance : ${balances}">
+                        <td th:if="${balance.asset.cntrprty}"><img class="asset-icon" th:src="@{/images/counterparty_logo.png}" height="17"/><span th:text="${balance.asset.name}"></span></td>
+                        <td th:if="${balance.asset.tilecoin}"><img class="asset-icon" th:src="@{/images/tilepay_logo_small.png}" height="15"/><span th:text="${balance.asset.name}"></span></td>
+                        <td class="text-center" th:text="${@assetQuantityConversionService.formatAsString(balance.asset, balance.quantity)}"></td>
+                        <td class="text-center" th:text="${@assetQuantityConversionService.formatAsString(balance.asset, balance.estimatedQuantity)}" style="border-right-width: 1px"></td>
+                    </tr>
+                </table>
+            </div>
+            
+            <ul class="nav nav-tabs" role="tablist">
+            <li id="sendTxTabId" class="active"><a href="#balanceSend" role="tab" data-toggle="tab" class="tab-2"><i class="fa fa-sign-out">&nbsp; </i><span th:utext="#{wallet.send.tab.send}"></span></a></li>
+            <!-- WALLET PAYMENT REQUEST TAB
+            <li><a href="#balanceRequest" id="requestTxTabId" role="tab" data-toggle="tab"><i class="fa fa-sign-in">&nbsp; </i><span th:utext="#{wallet.send.tab.request}"></span></a></li>
+            -->
+            <li><a href="#balanceHistory" id="txHistoryTabId" role="tab" data-toggle="tab" class="tab-2"><i class="fa fa-history">&nbsp; </i><span th:utext="#{wallet.send.tab.history}"></span></a></li>
+            </ul>
+            <br/><br/>
+            
+            <div id="page-content-wrapper">
+                    <div class="container-fluid">
+                        <div class="row tab-content">
+                            <div class="tab-content" id="transactionTabContent">
+                                <div class="tab-pane active" id="balanceSend">
+                                    <div th:if="${confirming} == null" th:include="sendTransaction :: sendTransaction" ></div>
+                                    <div th:if="${confirming} == true" th:include="confirmTransaction :: confirmTransaction" ></div>
+                                    <i style="display: none">addressFrom</i>
+                                </div>
+                                  <!-- WALLET PAYMENT REQUEST TAB
+                                <div class="tab-pane" id="balanceRequest">
+                                    <div th:include="requestTransaction :: requestTransaction" ></div>
+                                    <i style="display: none">requestAddress</i>
+                                </div>
+                                -->
+                                <div class="tab-pane" id="balanceHistory">
+                                    <div th:include="historyTransaction :: historyTransaction" ></div>
+                                </div>
+                              </div>
+                      </div>    
+                </div>
+           </div>
+        </div>
+         <!--COMMENTED OUT 2nd WALLET TABS-->
+        <div th:if="${network=='Testnet'}" class="tab-pane" id="markets">
+            <div th:include="walletMarkets :: walletMarkets" ></div>
+        </div>
+        <div class="tab-pane" id="iot">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="active"><a href="#deviceRegister" id="deviceRegisterTabId" role="tab" data-toggle="tab" class="tab-2"><i class="fa fa-sign-out">&nbsp; </i><span th:utext="#{deviceRegistrationForm.title}"></span></a></li>
+                <li><a href="#deviceList" id="deviceListTabId" role="tab" data-toggle="tab" class="tab-2"><i class="fa fa-history">&nbsp; </i><span th:utext="#{deviceList.title}"></span></a></li>
+            </ul>
+            <br/><br/>
+        
+            <div id="page-content-wrapper">
+                    <div class="container-fluid">
+                        <div class="row tab-content">
+                            <div class="tab-content" id="deviceTabContent">
+                                <div class="tab-pane active" id="deviceRegister">
+                                    <div th:if="${deviceRegistration} == null" th:include="deviceRegistration :: deviceRegistration" ></div>
+                                    <div th:if="${deviceRegistration} == true" th:include="deviceRegistrationSummary :: deviceRegistrationSummary" ></div>
+                                </div>
+                                <div class="tab-pane" id="deviceList">
+                                    <div th:include="deviceList :: deviceList" ></div>
+                                </div>
+                              </div>
+                      </div>    
+                </div>
+           </div>
+        </div>
+
+		<div class="tab-pane" id="uphold">
+			<div th:if="${session.upholdClient}==null or ${session.upholdClient.upholdAccessToken}==null or ${session.upholdClient.upholdAccessToken.accessToken}==null ">
+				<div th:include="upholdAuthorization :: upholdAuthorization"></div>
+			</div>
+
+			<div th:if="${session.upholdClient}!=null and ${session.upholdClient.upholdAccessToken}!=null and ${session.upholdClient.upholdAccessToken.accessToken}!=null">
+				<div class="row-warpper">
+					<ul class="nav nav-tabs col-md-10" role="tablist">
+						<li class="active"><a href="#upholdCards" id="upholdCardsTabId" role="tab" data-toggle="tab" class="tab-2"><i class="fa fa-credit-card">&nbsp; </i><span th:utext="#{upholdCards.title}"></span></a></li>
+						<li><a href="#upholdTransactions" id="upholdTransactionsTabId" role="tab" data-toggle="tab" class="tab-2"><i class="fa fa-exchange">&nbsp; </i><span th:utext="#{upholdTransactions.title}"></span></a></li>
+						<li><a href="#upholdTickers" id="upholdTickersTabId" role="tab" data-toggle="tab" class="tab-2"><i class="fa fa-line-chart">&nbsp; </i><span th:utext="#{upholdTickers.title}"></span></a></li>
+						<li><a href="#upholdContacts" id="upholdContactsTabId" role="tab" data-toggle="tab" class="tab-2"><i class="fa fa-users">&nbsp; </i><span th:utext="#{upholdContacts.title}"></span></a></li>
+						<!-- 
+						<li><a href="#upholdUser" id="upholdUserTabId" role="tab" data-toggle="tab" class="tab-2"><i class="fa fa-user">&nbsp; </i><span th:utext="#{upholdUser.title}"></span></a></li>
+						-->
+					</ul>
+					<form id="revokingTokenForm" class="col-md-2" th:action="@{/uphold/revokingToken}" role="form" method="GET" style="width: 190px; height: 42px; padding-left: 0px; padding-right: 0px;">
+						<div class="form-group text-right" style="margin-bottom: 4px; margin-top: 4px; margin-left: 4px;">
+							<button class="btn btn-default" type="submit">
+								<i class="fa fa-sign-out"></i><span th:text="#{uphold.button.singout}">Sign out with Uphold</span>
+							</button>
+						</div>
+					</form>
+				</div>
+
+				<div id="page-content-wrapper">
+				    <input th:id="blockExplorerUrl" th:type="hidden" th:value="${blockExplorerUrl}"/>
+					<div class="container-fluid">
+						<div class="row tab-content">
+							<div class="tab-content" id="upholdTabContent">
+								<div class="tab-pane active" id="upholdCards">
+									<div th:include="upholdCards :: upholdCards"></div>
+								</div>
+								<div class="tab-pane" id="upholdTransactions">
+									<div
+										th:include="upholdTransactions :: upholdTransactions"></div>
+								</div>
+								<div class="tab-pane" id="upholdTickers">
+									<div th:include="upholdTickers :: upholdTickers"></div>
+								</div>
+								<div class="tab-pane" id="upholdContacts">
+									<div th:include="upholdContacts :: upholdContacts"></div>
+								</div>
+								<!-- 
+								<div class="tab-pane" id="upholdUser">
+									<div th:include="upholdUser :: upholdUser"></div>
+								</div>
+								-->
+							</div>
+						</div>
+					</div>
+				</div>
+				
+	            
+			</div>
+		</div>
+
+		<!--<div class="tab-pane" id="bills">...</div>
+        <div class="tab-pane" id="exchange">...</div>
+        <div class="tab-pane" id="loans">...</div>
+        <div class="tab-pane" id="club">...</div>
+        <div class="tab-pane" id="gateway">...</div>-->
+    </div>
+    <div th:include="passphraseModal :: passphraseModal" ></div>
+    
+
+</div>
+
+</html>

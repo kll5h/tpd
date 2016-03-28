@@ -1,0 +1,21 @@
+dependencies {
+    compile "org.apache.httpcomponents:httpclient:${httpclientVersion}"
+    compile "commons-codec:commons-codec:1.10"
+    compile ("org.springframework:spring-web:${orgSpringframeworkVersion}")  {
+        exclude group: 'commons-logging'
+    }
+    compile ("org.springframework:spring-tx:${orgSpringframeworkVersion}")  {
+        exclude group: 'commons-logging'
+    }
+    compile ("org.springframework:spring-orm:${orgSpringframeworkVersion}")  {
+        exclude group: 'commons-logging'
+    }
+    compile ("org.springframework.data:spring-data-jpa:${springDataJpaVersion}") {
+        exclude group: 'commons-logging'
+    }
+    compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+    compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    compile "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
+    compile "org.codehaus.jackson:jackson-mapper-asl:1.9.13"
+}

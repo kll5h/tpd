@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="passphraseModal">
+    
+    <div class="modal fade" id="passphraseModal" tabindex="-1" role="dialog"
+		aria-labelledby="confirmationModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="confirmationModalLabel" th:text="#{passphraseModal.title}"></h4>
+				</div>
+				<div class="modal-body">
+					<form name="confirmation" class="form-inline" role="form">
+	                    	<span id="modal-password-error" class="errorMessage" th:text="#{passphraseModal.error.wrong}"></span>
+	                    	<div class="input-group">
+                                <input type="password" id="modal-password"  th:placeholder="#{passphraseModal.input.placeholder}" class="form-control"/>
+                                <span class="input-group-btn"><input type="submit" id="modal-confirm" class="btn btn-primary" th:value="#{passphraseModal.button}"></input></span>
+                            </div>
+                            <input type="hidden" id="modal-address" class="form-control"/>
+	                </form>
+	                <p id="private-key" class="help-block word-break hidden"></p>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script>
+		$(".private-key-btn").click(function(){
+			$("#modal-password").val("");
+			$("#modal-address").val($("#address").html());
+			resetModal();
+		});
+		$(".device-private-key-btn").click(function(){
+			console.log("device-private-key-btn");
+			$("#modal-password").val("");
+			var o = $(this).parent().parent().find("td.device-address");
+			var address = $(o).html();
+			console.log(address);
+			$("#modal-address").val(address);
+			resetModal();
+		});
+		$( "#modal-confirm" ).click(function( event ) {
+			if($("#modal-password").val()!=''){
+				resetModal();
+				var password = $("#modal-password").val();
+				var address = $("#modal-address").val();
+				$.get( "/wallet/confirm/"+password+"/"+address, function( data ) {
+					if(data.successful){
+						$("#private-key").html(data.message);
+						$("#private-key").removeClass("hidden")
+					} else {
+						$("#modal-password-error").show();
+					}
+				});
+			} else {
+				$("#modal-password-error").show();
+				$("#private-key").empty();
+				$("#private-key").addClass("hidden")
+			}
+			event.preventDefault();
+		});
+		
+		function resetModal() {
+			$("#private-key").empty();
+			$("#private-key").addClass("hidden");
+			$("#modal-password-error").hide();
+		}
+	</script>
+</div>
+
+</html>

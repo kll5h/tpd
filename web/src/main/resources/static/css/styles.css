@@ -1,0 +1,41 @@
+html{
+	min-height: 100%;
+    position: relative;
+    }
+
+body {
+    margin-bottom: 200px;
+}
+
+.signInButton {
+	cursor: pointer;
+	left: 1550px;
+	top: 30px;
+}
+
+.errorMessage {
+	color: red;
+}
+
+.table-nonfluid {
+	width: auto;
+}
+
+.word-break {
+	word-break: break-all;
+}
+
+.stickyfooter {
+    background-color: #F0AD4E;
+    bottom: 0;
+    max-height: 200px;
+    position: absolute;
+}
+
+.tilepay-gray {
+	color: #4F4F4F;
+}
+
+.asset-icon {
+	padding: 0 0.5em 0 0.5em;
+}

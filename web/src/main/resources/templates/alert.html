@@ -1,0 +1,8 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+    <div th:fragment="alert (attributeName, type)" th:id="${attributeName}" th:class="|alert ${type}|" role="alert" th:if="${__${attributeName}__}" th:text="${__${attributeName}__}"></div>
+    <div th:fragment="alertDanger (attributeName)" th:replace="alert::alert(${attributeName}, 'alert-danger')"></div>
+    <div th:fragment="alertSuccess (attributeName)" th:replace="alert::alert(${attributeName}, 'alert-success')"></div>
+
+</html>

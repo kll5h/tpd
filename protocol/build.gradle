@@ -1,0 +1,4 @@
+dependencies {
+    compile project(':domain')
+    compile "org.bitcoinj:bitcoinj-core:${bitcoinjVersion}"
+}

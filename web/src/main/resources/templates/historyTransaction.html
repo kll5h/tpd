@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<div th:fragment="historyTransaction">
+	
+	
+	
+	<h3 th:text="#{transactionHistory.receivedTransactions}"></h3>
+	<table id="recTx" class="table table-striped" >
+	<thead>
+	<tr>
+		<th th:text="#{transactionHistory.transactionHash}">Hash</th>
+		<th th:text="#{transactionHistory.blockNumber}">Block</th>
+		<th th:text="#{transactionHistory.time}">Time</th>
+		<th th:text="#{transactionHistory.source}">Source</th>
+		<th th:text="#{transactionHistory.destination}">Destination</th>
+	</tr>
+	</thead>
+	
+	<tbody>	
+	<tr data-th-each="transaction : ${transactions}" data-th-if="${transaction.type.name()} == RECEIVING">
+		<td><a data-th-href="${@blockExplorer.getTransactionUrl(transaction.hash)}" target="_blank"><span data-th-text="${#strings.abbreviate(transaction.hash,10)}"></span></a><p hidden="true" data-th-text="${transaction.hash}"></p></td>
+		<td data-th-text="${transaction.block}"></td>
+		<td data-th-text="${transaction.updateTime}"></td>
+		<td>
+		<p data-th-each="input : ${transaction.inputs}">
+			<a data-th-href="${@blockExplorer.getAddressUrl(input.address)}" target="_blank"><span data-th-text="${input.address}"></span></a>
+			<br/>
+		</p>
+		</td>
+		<td>
+		<p data-th-each="output : ${transaction.outputs}">
+             <span th:if="${output.asset} == null and ${output.assetAmount} == null">
+                <a data-th-href="${@blockExplorer.getAddressUrl(output.address)}" target="_blank"><span data-th-text="${output.address}"></span></a>
+                <span style="float: right;" data-th-text="${output.amount}"></span>
+            </span>
+            <span th:if="${output.assetExists}">
+                 <span th:if="${output.asset.tilecoin}" class="bg-success"><span th:text="${transaction.message} + ${output.assetAmount}"></span><img class="asset-icon" th:src="@{/images/tilepay_logo_small.png}" height="15"/><span th:text="${output.asset.name}"></span></span>
+                 <span th:if="${output.asset.cntrprty}" class="bg-success"><span th:text="${transaction.message} + ${output.assetAmount}"></span><img class="asset-icon" th:src="@{/images/counterparty_logo.png}" height="17"/><span th:text="${output.asset.name}"></span></span>
+            </span>
+            <br/>
+		</p>
+		</td>
+	</tr>
+	</tbody>
+	
+	</table>
+	
+	<h3 th:text="#{transactionHistory.sentTransactions}"></h3>
+	<table id="sendTx" class="table table-striped">
+	<thead>
+	<tr>
+		<th th:text="#{transactionHistory.transactionHash}">Hash</th>
+		<th th:text="#{transactionHistory.blockNumber}">Block</th>
+		<th th:text="#{transactionHistory.time}">Time</th>
+		<th th:text="#{transactionHistory.source}">Source</th>
+		<th th:text="#{transactionHistory.destination}">Destination</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	<tr data-th-each="transaction : ${transactions}" data-th-if="${transaction.type.name()} != RECEIVING">
+
+		<td><a data-th-href="${@blockExplorer.getTransactionUrl(transaction.hash)}" target="_blank"><span data-th-text="${#strings.abbreviate(transaction.hash,10)}"></span></a><p hidden="true" data-th-text="${transaction.hash}"></p></td>
+		<td data-th-text="${transaction.block}"></td>
+		<td data-th-text="${transaction.updateTime}"></td>
+
+		<td>
+			<p data-th-each="input : ${transaction.inputs}">
+				<a data-th-href="${@blockExplorer.getAddressUrl(input.address)}" target="_blank"><span data-th-text="${input.address}"></span></a>
+				<span style="float: right;" data-th-text="${input.amount}"></span>
+				<br/>
+			</p>
+		</td>
+
+		<td>
+			<p data-th-each="output : ${transaction.outputs}">
+                <span th:if="${output.deviceRegistration}" class="bg-danger" ><span th:text="#{transactionHistory.deviceRegistration}"></span></span>
+				<span th:if="${output.assetExists}">
+					<span th:if="${output.asset.tilecoin}" class="bg-danger" ><span th:text="${transaction.message} + ${output.assetAmount}"></span><img class="asset-icon" th:src="@{/images/tilepay_logo_small.png}" height="15"/><span th:text="${output.asset.name}"></span></span>
+					<span th:if="${output.asset.cntrprty}" class="bg-danger" ><span th:text="${transaction.message} + ${output.assetAmount}"></span><img class="asset-icon" th:src="@{/images/counterparty_logo.png}" height="17"/><span th:text="${output.asset.name}"></span></span>
+				</span>
+                <span th:if="${output.asset} == null and ${output.assetAmount} == null">
+					<a th:if="${output.change} == false and ${output.address} != null" data-th-href="${@blockExplorer.getAddressUrl(output.address)}" target="_blank"><span data-th-text="${output.address}"></span></a>
+					<span th:if="${output.change}" data-th-text="#{transactionHistory.transactionChange}"></span>
+				</span>
+				<span style="float: right;" data-th-text="${output.amount}"></span>
+				<br/>
+			</p>
+			<span data-th-text="#{transactionHistory.transactionFee}"></span><span style="float: right;" data-th-text="${transaction.fee}"></span>
+		<br/>
+		</td>
+	</tr>
+	</tbody>
+	</table>
+	</div>
+
+</html>

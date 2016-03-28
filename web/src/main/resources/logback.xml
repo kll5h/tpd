@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="true">
+
+    <define name="logFileDir" class="com.tilepay.web.LogFileDirPropertyDefiner"/>
+
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{dd.MM.yyyy/HH:mm:ss.SSS/zzz} [%thread] [%-5level] - at %C.%M\(%file:%line\) - [%msg]%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="dailyRollingFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${logFileDir}tilepay.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${logFileDir}tilepay.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <Pattern>%d{dd.MM.yyyy/HH:mm:ss.SSS/zzz} [%thread] [%-5level] - at %C.%M\(%file:%line\) - [%msg]%n</Pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.bitcoinj" level="INFO"/>
+
+    <root level="WARN">
+        <appender-ref ref="consoleAppender"/>
+        <appender-ref ref="dailyRollingFileAppender"/>
+    </root>
+</configuration>

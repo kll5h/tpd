@@ -1,0 +1,49 @@
+<project name="Qora" basedir=".">
+
+	<property file="core/src/main/resources/application.properties" />
+
+	<path id="conf.classpath">
+		<fileset dir="conf/lib" includes="*.jar" />
+	</path>
+
+    <target name="create-db">
+		<drop-active-connections database="${db.database}"/>
+		<create-db database="${db.database}" user="${db.username}" pass="${db.password}" />
+	</target>
+
+    <macrodef name="drop-active-connections">
+        <attribute name="database" />
+
+        <sequential>
+            <echo message="Dropping active connections: @{database}" />
+
+            <sql driver="org.postgresql.Driver" url="${db.root.url}" userid="${db.root.userid}" password="${db.root.password}" onerror="continue" autocommit="true" print="true">
+                <classpath refid="conf.classpath" />
+                SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = '@{database}' AND pid &lt;&gt; pg_backend_pid();
+            </sql>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="create-db">
+		<attribute name="database" />
+		<attribute name="user" />
+		<attribute name="pass" />
+
+		<sequential>
+			<echo message="Creating db -> @{database} by: ${db.root.userid}, ${db.root.password} in: ${db.root.url}" />
+
+			<sql driver="org.postgresql.Driver" url="${db.root.url}" userid="${db.root.userid}" password="${db.root.password}" onerror="continue" autocommit="true" print="true">
+				<classpath refid="conf.classpath" />
+				DROP DATABASE @{database};
+				DROP ROLE @{user};
+			</sql>
+
+			<sql driver="org.postgresql.Driver" url="${db.root.url}" userid="${db.root.userid}" password="${db.root.password}" autocommit="true" print="true">
+				<classpath refid="conf.classpath" />
+				CREATE ROLE @{user} LOGIN PASSWORD '@{pass}';
+				CREATE DATABASE @{database} WITH OWNER = @{user} ENCODING 'UTF-8' LC_COLLATE 'C' LC_CTYPE 'C' TEMPLATE template0;
+			</sql>
+		</sequential>
+	</macrodef>
+
+</project>

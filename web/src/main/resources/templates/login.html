@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default">
+                    <div th:replace="langSelector :: langSelector"></div>
+                    <div class="panel-heading text-center">
+                        <h3 class="panel-titlev" th:utext="#{login.title}">Title</h3>
+                        <div th:class="${param.logout}?alert+' '+alert-success +' '+show:hidden" role="alert" th:utext="#{login.logoutMessage}"></div>
+                    </div>
+                    <div class="panel-body">
+                        <div id="step1">
+
+                            <div class="alert alert-success" th:if="${success_msg != null}">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <span th:utext="${success_msg}"></span>
+                            </div>
+
+                            <div id="block-error2" class="alert alert-danger" th:if="${downloading_msg != null}">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <span th:utext="${downloading_msg}"></span>
+                            </div>
+
+                            <div id="block-error" class="alert alert-danger hidden">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <span th:utext="#{login.blockchain.downloading}"></span>
+                            </div>
+
+                            <img class="img-responsive center-block" th:src="@{/images/login_box.png}" />
+                            <br />
+                            <br />
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3">
+                                    <form name="login" th:action="@{/login}" method="POST" class="form-inline" role="form">
+                                        <div th:class="${param.error}? form-group + ' ' +has-error:form-group + ' ' +has-success">
+                                            <label class="control-label" th:class="${param.error}? control-label + ' ' + show:hidden" for="username" th:utext="#{login.invalidPassword}"></label>
+                                            <div class="input-group">
+                                                <input type="password" id="username" name="username" value="" th:placeholder="#{passphraseModal.input.placeholder}" class="form-control" />
+                                                <input type="text" id="password" name="password" value="" class="sr-only" />
+                                                <input type="hidden" id="firstLogin" name="firstLogin" th:value="${test}" />
+                                                <span class="input-group-btn">
+                                                    <input type="button" id="login" th:value="#{login.button.login}" class="btn btn-default" onclick="loginFormSubmit()" th:utext="#{login.button.login}" />
+                                                </span>
+                                            </div>
+                                            <br />
+                                            <br />
+                                        </div>
+                                    </form>
+                                    <a id="createNewAccount" href="/createNewAccount" class="btn btn-primary btn-block" th:text="#{login.button.newAccount}"></a>
+                                </div>
+                            </div>
+                            <br />
+                            <br />
+                            <div class="row">
+                                <div id="sync-status" class="progress hidden" th:fragment="loading-bar">
+                                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="0" aria-valuenow="100" style="width: 100%">
+                                        <span th:utext="#{login.progress.loading}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="text-right">
+                    <div th:replace="environment :: environment"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <footer class="stickyfooter">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 col-md-6 col-xs-6">
+                        <h4>
+                            <i class="fa fa-lock"></i> <span th:text="#{login.footer.column1.header}"></span>
+                        </h4>
+                        <p th:text="#{login.footer.column1.text}"></p>
+                        <p>
+                            <a href="http://opensource.org/licenses/CDDL-1.0" target="_blank">Common Development and Distribution License (CDDL-1.0)</a>
+                        </p>
+                        <div th:replace="version :: version"></div>
+                    </div>
+                    <div class="col-sm-6 col-md-6 col-xs-6">
+                        <h4>
+                            <i class="fa fa-cog"></i> <span th:text="#{login.footer.column2.header}"></span>
+                        </h4>
+                        TilePay
+                        <a href="https://www.tilepay.org/">
+                            <img th:src="@{/images/tilepay_logo_small.png}" />
+                        </a>
+                        bitcoinj
+                        <a href="http://bitcoinj.github.io/">
+                            <img th:src="@{/images/bitcoinj_logo_small.png}" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+</div>
+</html>

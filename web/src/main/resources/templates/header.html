@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="content">
+    <div class="masthead">
+		<div id="header-nav" class="row">
+			<div class="row">
+				<div class="col-sm-10 col-lg-11 text-right" style="padding-right:2em">
+					<div th:replace="environment :: environment"></div>
+				</div>
+				
+			</div>
+			<div class="col-sm-2 col-md-1">
+				<img th:src="@{/images/tilepay_logo_medium.png}"/>
+			</div>
+	    	<div class="col-sm-9 col-md-10">
+		        <ul class="nav nav-justified">
+		            <li><a href="/wallet"><i class="fa fa-money fa-2x">&nbsp; </i><span th:utext="#{header.button.wallet}"></span></a></li>
+		            <li><a href="#"><i class="fa fa-shopping-cart fa-2x">&nbsp; </i><span th:utext="#{header.button.merchants}"></span></a></li>
+		            <li><a href="#"><i class="fa fa-pencil-square-o fa-2x">&nbsp;</i><span th:utext="#{header.button.projects}"></span></a></li>
+		            <li><a href="/profile" th:href="@{/profile/} + (${accountType} ? ${accountType}+'/' : '')"><i class="fa fa-user fa-fw fa-2x">&nbsp;</i><span th:utext="#{header.button.profile}"></span></a></li>
+		            <li><a href="#"><i class="fa fa-wrench fa-2x">&nbsp; </i><span th:utext="#{header.button.settings}"></span></a></li>
+		            <li><a href="#"><i class="fa fa-search fa-2x">&nbsp; </i><span th:utext="#{header.button.search}"></span></a></li>
+		        </ul>
+	    	</div>
+	    	<div class="col-sm-1 col-md-1">
+          <form action="/logout">
+            <button class="btn btn-default" onClick="resetTabs()">
+               <i class="fa fa-sign-out"></i><span id="logout" th:text="#{header.button.logout}"></span>
+            </button>
+          </form>
+	    	</div>
+		</div>
+		 </div>
+    <!-- Modal -->
+    <!--
+    <div th:replace="loginNewAccount :: content"></div>
+    -->
+</div>
+
+
+
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<div th:fragment="requestTransaction">
+		<form class="form-horizontal" th:action="@{/wallet/send}" th:object="${transactionForm}"  role="form" method="POST">
+			<!-- Content -->
+
+			<div class="alert alert-success" th:if="${saved}==true">
+				<button type="button" class="close" data-dismiss="alert">
+					&times;
+				</button>
+				<span th:utext="#{transactionForm.sendSuccess}"></span>
+			</div>
+
+			<div class="form-group">
+				<label for="requestAddress" class="control-label col-xs-3">request address</label>
+				<div class="col-xs-5">
+					<input type="text" id="requestAddress" th:placeholder="#{transactionForm.addressFrom.placeholder}" class="form-control" ondrop="drop(event)" ondragover="allowDrop(event)"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-xs-offset-3">
+					<button type="submit" id="save" class="btn btn-primary" th:text="#{transactionForm.button.send}"></button>
+				</div>
+			</div>
+
+		</form>
+
+	</div>
+
+</html>

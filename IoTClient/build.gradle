@@ -1,0 +1,54 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+jar {
+    baseName = 'iotclient'
+    version =  '0.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+
+dependencies {
+    compile ("org.springframework:spring-tx:${orgSpringframeworkVersion}")  {
+        exclude group: 'commons-logging'
+    }
+    compile ("org.springframework:spring-orm:${orgSpringframeworkVersion}")  {
+        exclude group: 'commons-logging'
+    }
+    compile ("org.springframework.data:spring-data-jpa:${springDataJpaVersion}") {
+        exclude group: 'commons-logging'
+    }
+
+    compile "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
+
+    compile ("org.springframework.boot:spring-boot:${springBootVersion}") {
+        exclude group: 'commons-logging'
+    }
+    compile ("org.springframework.boot:spring-boot-starter-web:${springBootVersion}") {
+        exclude module: "spring-boot-starter-tomcat"
+        exclude group: 'commons-logging'
+    }
+
+    runtime "org.eclipse.jetty:jetty-webapp:${jettyVersion}"
+
+    runtime "javax.el:javax.el-api:${javaxElApiVersion}"
+    
+    compile 'com.nimbusds:nimbus-jose-jwt:3.10'
+    
+    testCompile 'junit:junit:4.12'
+}

@@ -1,0 +1,57 @@
+buildscript {
+    repositories {
+        maven { url "http://repo.spring.io/libs-release" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'spring-boot'
+
+springBoot {
+    mainClass = "com.tilepay.daemon.Daemon"
+}
+
+dependencies {
+    compile project(':domain')
+    compile project(':protocol')
+    compile project(':counterparty_client')
+
+    compile ("org.springframework:spring-tx:${orgSpringframeworkVersion}")  {
+        exclude group: 'commons-logging'
+    }
+    compile ("org.springframework:spring-orm:${orgSpringframeworkVersion}")  {
+        exclude group: 'commons-logging'
+    }
+    compile ("org.springframework.data:spring-data-jpa:${springDataJpaVersion}") {
+        exclude group: 'commons-logging'
+    }
+
+    compile "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
+
+    compile ("org.springframework.boot:spring-boot:${springBootVersion}") {
+        exclude group: 'commons-logging'
+    }
+    compile ("org.springframework.boot:spring-boot-starter-web:${springBootVersion}") {
+        exclude module: "spring-boot-starter-tomcat"
+        exclude group: 'commons-logging'
+    }
+    compile ("org.springframework.boot:spring-boot-starter-security:${springBootVersion}") {
+        exclude module: "spring-web"
+        exclude group: 'commons-logging'
+    }
+
+    runtime "org.eclipse.jetty:jetty-webapp:${jettyVersion}"
+
+    compile "org.hibernate:hibernate-core:${hibernateVersion}"
+    runtime "org.hibernate:hibernate-entitymanager:${hibernateVersion}"
+    compile "org.hibernate:hibernate-validator:${hibernateValidatorVersion}"
+    compile "org.flywaydb:flyway-core:${flywayVersion}"
+
+    compile "org.bitcoinj:bitcoinj-core:${bitcoinjVersion}"
+
+    runtime "javax.el:javax.el-api:${javaxElApiVersion}"
+    compile "com.h2database:h2:${h2Version}"
+    runtime 'org.aspectj:aspectjweaver:1.8.7'
+}

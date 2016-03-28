@@ -1,0 +1,95 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<div th:fragment="sendTransaction">
+		<form id="sendTransaction" class="form-horizontal" th:action="@{/wallet/confirm}" th:object="${transactionForm}"  role="form" method="POST">
+
+			<input type="hidden" th:field="*{asset.protocol}"></input>
+
+			<div id="txSendSuccessMsgDiv" class="alert alert-success hidden">
+				<button type="button" class="close" data-dismiss="alert">
+					&times;
+				</button>
+				<span id="txSendSuccessMsg"></span>
+			</div>
+
+			<div class="form-group">
+				<label for="addressFrom" class="control-label col-xs-3" th:text="#{transactionForm.addressFrom}"></label>
+				<div class="col-md-6 col-xs-8">
+					<input type="text" th:field="*{addressFrom}" th:placeholder="#{transactionForm.addressFrom.placeholder}" class="form-control" ondrop="drop(event)" ondragover="allowDrop(event)"></input>
+					<span id="errorAddressFrom" class="errorMessage" th:errors="*{addressFrom}"></span>
+				</div>
+			</div>
+			<div class="form-group" th:if="${session.upholdCards} != null and ${#lists.size(session.upholdCards)} gt 0">
+				<label for="upholdCardAddressTo" class="control-label col-xs-3" th:text="#{transactionForm.upholdCardAddressTo}"></label>
+				<div class="col-md-6 col-xs-8">
+					<select th:id="upholdCardSelectId" class="form-control">
+                        <option value="" th:text="#{transactionForm.upholdCardSelect}"></option>
+                        <option th:each="card, cardStat : ${session.upholdCards}" th:value="${card.address.bitcoin}">
+                            <span th:text="${card.label}"></span>  -  (<span style="color: blue;" th:text="${card.address.bitcoin}"></span>)
+                        </option>
+                    </select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="addressTo" class="control-label col-xs-3" th:text="#{transactionForm.addressTo}"></label>
+				<div class="col-md-6 col-xs-8">
+					<input type="text" th:field="*{addressTo}" placeholder="" class="form-control"></input>
+					<span id="errorAddressTo" class="errorMessage" th:errors="*{addressTo}"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="amount" class="control-label col-xs-3" th:text="#{transactionForm.amount}"></label>
+				<div class="col-md-4 col-xs-8">
+					<input type="text" th:field="*{amount}" placeholder="" class="form-control"></input>
+					<span id="errorAmount" class="errorMessage" th:errors="*{amount}"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="asset" class="control-label col-xs-3" th:text="#{transactionForm.currency}"></label>
+				<div class="col-md-4 col-xs-8">
+
+					<select th:field="*{asset}" class="form-control">
+						<option value="" th:text="#{transactionForm.currencySelect}"><i></i></option>
+						<option th:each="asset: ${assets}" th:attr="protocol=${asset.protocol}" th:value="${asset.name}">
+						<span th:if="${asset.checkForDuplicateName(assets,asset.name)==true}" th:text="${asset.name} + ' (' + ${asset.protocol} + ')'"></span>
+						
+						<span th:if="${asset.checkForDuplicateName(assets,asset.name)==false}" th:text="${asset.name}"></span>
+						</option>
+						
+					</select>
+					<span id="errorAsset" class="errorMessage" th:errors="*{asset}"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="minersFee" class="control-label col-xs-3" th:text="#{transactionForm.minersFee}"></label>
+				<div class="col-md-4 col-xs-8">
+					<input type="text" th:field="*{minersFee}" placeholder="" class="form-control" onkeyup="replaceCommaWithPoint(this)" value=""></input>
+					<span id="errorMinersFee" class="errorMessage" th:errors="*{minersFee}"></span>
+				</div>		
+				<i id="tooltip" class="fa fa-question-circle" style="font-size:16px;" data-toggle="tooltip" th:title="#{transactionForm.tooltip.minersFee(${minimalFee})}"></i>			
+			</div>
+			<div class="col-xs-offset-3">
+					<p name="xtcFeeInfo" class="hidden" th:text="#{transactionForm.tileCoinFeeInfo}"></p>
+			</div>
+			<div class="form-group">
+				<div class="col-xs-offset-3">
+					<button type="submit" id="sendBtn" class="btn btn-primary" th:text="#{transactionForm.button.send}"></button>
+				</div>
+			</div>
+
+		</form>
+	
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		    var assets = [[${assets}]];
+		/*]]>*/
+		$( "#sendBtn" ).click(function() {
+			var protocol = $('option:selected', $( "#asset" )).attr('protocol');
+			console.debug(protocol);
+			$( "#asset\\.protocol").attr("value", protocol);
+		});
+	</script>
+
+</div>
+
+</html>

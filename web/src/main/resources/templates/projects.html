@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="content">
+    <br/>
+    <br/>
+    <ul class="nav nav-tabs" role="tablist">
+        <li><a href="/projects/details" th:text="#{projects.tab.detail}"></a></li>
+        <li><a href="/projects/funded" th:text="#{projects.tab.funded}"></a></li>
+        <li><a href="/projects/myprojects" th:text="#{projects.tab.myProjects}"></a></li>
+    </ul>
+</div>
+
+</html>

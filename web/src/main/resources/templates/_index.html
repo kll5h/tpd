@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="content">
+
+    <script>
+
+        $(document).ready(function() {
+            $.ajax({
+                url: "http://localhost:8080/assets/123456"
+            }).then(function(data) {
+                $('.asset-id').append(data);
+            });
+        });
+
+    </script>
+
+    <form action="/wallet" method="GET">
+        <input type="submit" value="Click on Wallet" />
+    </form>
+    <div th:if="${wallet}" th:text="${wallet}"></div>
+    <button>P2P Trade</button>
+    <button>Assets</button>
+
+    <p class="asset-id"></p>
+
+    <button>Naming</button>
+    <button>Voting</button>
+    <button>Generated Blocks</button>
+    <button>Send</button>
+    <button>Request</button>
+</div>
+
+</html>

@@ -1,0 +1,246 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("net.sf.proguard:proguard-gradle:5.2.1")
+    }
+}
+
+Properties props = new Properties()
+props.load(new FileInputStream("${projectDir}/web/src/main/resources/version.properties"))
+def tilepayVersion = props.getProperty('tilepayVersion')
+project.ext.tilepayVersion = tilepayVersion
+
+subprojects {
+
+
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'jacoco'
+    apply plugin: 'eclipse'
+
+
+    compileJava.options.encoding = 'UTF-8'
+    compileTestJava.options.encoding = 'UTF-8'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url 'http://repo.spring.io/libs-snapshot' }
+    }
+
+    dependencies {
+        compile "javax.inject:javax.inject:1"
+
+        compile("org.springframework:spring-context:${orgSpringframeworkVersion}") {
+            exclude group: 'commons-logging'
+        }
+
+        compile 'org.apache.commons:commons-lang3:3.4'
+        compile 'commons-io:commons-io:2.4'
+
+
+        compile("org.springframework:spring-web:${orgSpringframeworkVersion}") {
+            exclude group: 'commons-logging'
+        }
+
+        runtime 'ch.qos.logback:logback-classic:1.1.3'
+        runtime "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
+
+        testCompile "junit:junit:${junitVersion}"
+        testCompile 'org.hamcrest:hamcrest-all:1.3'
+        testCompile("org.springframework:spring-test:${orgSpringframeworkVersion}") {
+            exclude group: 'commons-logging'
+        }
+        testCompile "org.mockito:mockito-core:1.+"
+    }
+
+
+    jacoco {
+        toolVersion = "0.7.5.201505241946"
+        reportsDir = file("$buildDir/jacocoReportDir")
+    }
+
+    test {
+        systemProperty "spring.profiles.active", "unittest,local-testnet"
+        testLogging {
+            events 'passed'
+        }
+    }
+
+}
+
+task buildJar(type: GradleBuild) {
+    startParameter.excludedTaskNames = ['test']
+    tasks = ['clean', 'build']
+
+    doLast {
+        ant.signjar(
+                destDir: '.',
+                jar: "web/build/libs/tilepay-" + tilepayVersion + ".jar",
+                keystore: 'ignitekeystore.jks',
+                storepass: '5cxLo66LKwg7',
+                tsaurl: 'http://timestamp.entrust.net/TSS/RFC3161sha1TS',
+                alias: 'ignite',
+                preservelastmodified: 'true',
+                verbose: 'true');
+    }
+}
+
+task updateScriptVersion {
+    copy {
+        from 'tilepay.bat'
+        from 'testnetTilepay.bat'
+        from 'tilepay.sh'
+        from 'testnetTilepay.sh'
+        into 'scripts'
+        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [VERSION: tilepayVersion])
+    }
+}
+
+task createRelease(type: Zip, dependsOn: [buildJar, updateScriptVersion]) {
+    destinationDir file('.')
+    archiveName 'tilepay.zip'
+    from("tilepay-" + tilepayVersion + ".jar")
+    from("scripts")
+    includes = ["tilepay-" + tilepayVersion + ".jar", 'tilepay.bat', 'testnetTilepay.bat', 'tilepay.sh', 'testnetTilepay.sh']
+
+    doLast {
+        ant.checksum(file: 'tilepay.zip', algorithm: 'MD5', forceOverwrite: 'yes');
+        ant.checksum(file: 'tilepay.zip', algorithm: 'SHA-256', forceOverwrite: 'yes');
+    }
+}
+
+/*signing {
+    sign createRelease
+}*/
+
+task myProguardTask(type: proguard.gradle.ProGuardTask) {
+    configuration file('obfuscation.config')
+
+    outjars file("tilepay-" + tilepayVersion + ".jar")
+    libraryjars file("${System.getProperty('java.home')}/lib/rt.jar")
+
+    FileTree libDir = fileTree(dir: "web/build/libs/tilepay-" + tilepayVersion + "/lib", include: '*spring-*.jar')
+    libDir.collect { relativePath(it) }.sort().each {
+        libraryjars file(it)
+    }
+
+    //libraryjars file("web/build/classes/main")
+    libraryjars file("common_client/build/classes/main")
+    libraryjars file("counterparty_client/build/classes/main")
+    libraryjars file("uphold_client/build/classes/main")
+    libraryjars file("core/build/classes/main")
+    libraryjars file("web/build/libs/tilepay-" + tilepayVersion + "/lib/validation-api-1.1.0.Final.jar")
+    libraryjars file("web/build/libs/tilepay-" + tilepayVersion + "/lib/thymeleaf-spring4-2.1.4.RELEASE.jar")
+    libraryjars file("web/build/libs/tilepay-" + tilepayVersion + "/lib/javax.servlet-api-3.1.0.jar")
+    libraryjars file("web/build/libs/tilepay-" + tilepayVersion + "/lib/thymeleaf-2.1.4.RELEASE.jar")
+    libraryjars file("web/build/libs/tilepay-" + tilepayVersion + "/lib/bitcoinj-core-0.13.3.jar")
+    libraryjars file("web/build/libs/tilepay-" + tilepayVersion + "/lib/commons-lang3-3.4.jar")
+    libraryjars file("web/build/libs/tilepay-" + tilepayVersion + "/lib/hibernate-validator-5.2.2.Final.jar")
+
+    dontoptimize
+    keepdirectories
+    renamesourcefileattribute 'SourceFile'
+    keepattributes '*Annotation*'
+    keepattributes 'Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod'
+    keep 'public class * { public protected *;}'
+    keepclassmembernames 'class * {java.lang.Class class$(java.lang.String); java.lang.Class class$(java.lang.String, boolean);}'
+    keepclassmembers 'enum * {public static **[] values(); public static ** valueOf(java.lang.String);}'
+    keepclassmembers 'class * implements java.io.Serializable { \
+        static final long serialVersionUID; \
+        static final java.io.ObjectStreamField[] serialPersistentFields; \
+        private void writeObject(java.io.ObjectOutputStream); \
+        private void readObject(java.io.ObjectInputStream); \
+        java.lang.Object writeReplace(); \
+        java.lang.Object readResolve(); \
+    }'
+    keep 'public class * implements javax.servlet.Servlet'
+    keep 'public class * implements javax.servlet.Filter'
+    keep 'public class * extends javax.servlet.http.HttpServlet'
+    keep 'class * implements javax.servlet.ServletContext { *; }'
+    keepclassmembers allowshrinking: true, 'enum * { \
+        public static **[] values(); \
+        public static ** valueOf(java.lang.String); \
+    }'
+    keep '@org.springframework.beans.factory.annotation.Service class *'
+    keep '@org.springframework.context.annotation.Configuration class *'
+    keep '@org.springframework.stereotype.Controller class *'
+
+
+
+
+    keep 'class com.tilepay.web.controller.LoginController'
+    keepnames 'class com.tilepay.web.controller.LoginController'
+    keepclasseswithmembers 'class com.tilepay.web.controller.LoginController'
+    keepclassmembernames 'class com.tilepay.web.controller.LoginController'
+    keepclasseswithmembernames 'class com.tilepay.web.controller.LoginController'
+
+    keep 'class org.springframework.jndi.JndiPropertySource'
+    keep 'class org.springframework.jndi.JndiLocatorDelegate { *; }'
+    keep 'class org.springframework.context.** { *; }'
+    keep 'class org.springframework.format.support.** { *; }'
+    keep 'class org.springframework.ui.context.support.** { *; }'
+    keep 'class org.springframework.validation.** { *; }'
+    keep 'class org.springframework.http.**  { *; }'
+    keep 'class org.springframework.ui.velocity.** { *; }'
+    keep 'class org.springframework.web.bind.** { *; }'
+    keep 'class org.springframework.web.context.** { *; }'
+    keep 'class org.springframework.web.context.ContextLoaderListener { *; }'
+    keep 'class org.springframework.web.context.support.XmlWebApplicationContext { *; }'
+    keep 'class org.springframework.web.context.support.GenericWebApplicationContext { *; }'
+    keep 'class org.springframework.web.context.support.StaticWebApplicationContext { *; }'
+    keep 'class org.springframework.web.context.support.AbstractRefreshableWebApplicationContext { *; }'
+    keep 'class org.springframework.web.context.WebApplicationContext { *; }'
+    keep 'class org.springframework.web.filter.** { *; }'
+    keep 'class org.springframework.web.servlet.i18n.**'
+    keep 'class org.springframework.web.method.** { *; }'
+    keep 'class org.springframework.web.servlet.DispatcherServlet { *; }'
+    keep 'class org.springframework.web.servlet.config.**'
+    keep 'class org.springframework.web.servlet.support.*'
+    keep 'class org.springframework.web.servlet.theme.**'
+    keep 'class org.springframework.web.servlet.view.*'
+    keep 'class org.springframework.web.servlet.view.x**'
+    keep 'class org.springframework.web.servlet.view.velocity.**  { *; }'
+    keep 'class org.springframework.web.util.** { *; }'
+    keep 'class org.springframework.web.view.*'
+    keep 'class * implements org.springframework.web.context.ConfigurableWebApplicationContext { *; }'
+    keep 'class * implements org.springframework.context.ApplicationListener { *; }'
+    keep 'class * extends org.springframework.web.context.support.XmlWebApplicationContext { *; }'
+
+    keep 'class * extends org.springframework.web.servlet.DispatcherServlet { *; }'
+    keep 'class org.springframework.beans.factory.** { *; }'
+    keep 'class org.apache.velocity.runtime.directive.** { *; }'
+    keep 'class org.apache.velocity.runtime.ParserPoolImpl'
+    keep 'class org.reflections.spring.**'
+    keep 'class * implements javax.servlet.FilterChain { *; }'
+
+
+    keepclassmembers 'class * { \
+        @org.springframework.beans.factory.annotation.Autowired *; \
+        @org.springframework.beans.factory.annotation.Qualifier *; \
+        @org.springframework.beans.factory.annotation.Value *; \
+        @org.springframework.beans.factory.annotation.Required *; \
+        @org.springframework.context.annotation.Bean *; \
+        @javax.annotation.PostConstruct *; \
+        @javax.annotation.PreDestroy *; \
+        @org.aspectj.lang.annotation.AfterReturning *; \
+        @org.aspectj.lang.annotation.Pointcut *; \
+        @org.aspectj.lang.annotation.AfterThrowing *; \
+        @org.aspectj.lang.annotation.Around *; \
+    }'
+
+    keep '@org.springframework.stereotype.Service class *'
+    keep '@org.springframework.stereotype.Controller class *'
+    keep '@org.springframework.stereotype.Component class *'
+    keep '@org.springframework.stereotype.Repository class *'
+    keep '@org.springframework.cache.annotation.EnableCaching class *'
+    keep '@org.springframework.context.annotation.Configuration class *'
+
+    keepattributes 'Signature,RuntimeVisibleAnnotations,AnnotationDefault'
+
+}

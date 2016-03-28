@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+	<div th:fragment="content">
+		<h2 th:text="#{profile.title}"></h2>
+		<div class="form-group">
+			<label for="importData" th:text="#{profile.importFrom}"></label>
+			<select>
+				<option>Coinbase</option>
+			</select>
+			<button class="btn btn-success disabled" th:text="#{profile.button.import}">
+			</button>
+		</div>
+
+		<div th:include="profileHeader :: header" ></div>
+
+		<div class="row">
+			<!-- Navigation Buttons -->
+			<div class="col-md-3">
+				<ul class="nav nav-pills nav-stacked" id="myTabs">
+					<li id="publicTab" th:class="${activeTab == 'PUBLIC' ? 'active' : ''}">
+						<a href="#public" data-toggle="tab"><i class="fa fa-eye fa-2x"></i> &nbsp; <span th:text="#{profile.tab.public}"></span></a>
+					</li>
+					<li id="privateTab" th:class="${activeTab == 'PRIVATE' ? 'active' : ''}">
+						<a href="#private" data-toggle="tab" ><i class="fa fa-eye-slash fa-2x"></i> &nbsp; <span th:text="#{profile.tab.private}"></span></a>
+					</li>
+				</ul>
+			</div>
+
+				<!-- Content -->
+				<div id="page-content-wrapper">
+					<div class="container-fluid">
+						<div class="row tab-content col-md-9">
+<!-- 								<div class="form-group"> -->
+<!-- 									<label class="control-label col-xs-3"></label> -->
+<!-- 									<div class="col-xs-9" style="font-size: 20px; color:red;"> -->
+<!-- 										<div th:if="${#fields.hasErrors('*')}" th:text="#{profile.errorMessage}"> -->
+<!-- 										</div> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+
+							<div th:class="${activeTab} == 'PUBLIC'? tab-pane+' '+active : tab-pane" id="public">
+                <form class="form-horizontal" th:action="@{/profile/individual/public}" th:object="${publicDetails}" role="form" method="POST">
+                <div class="alert alert-success fade in" role="alert" th:if="${publicDetailsSaveSuccess}">
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                    <span th:text="#{profile.tab.public.save.success}"></span>
+                </div>
+                <h2 th:text="#{profile.tab.header.public}"></h2>
+								<!--
+								<div class="form-group">
+								<label for="firstName" class="control-label col-xs-3">Display name (optional)</label>
+								<div class="col-xs-9">-->
+								<!-- TODO: Vladimir: display name --><!--
+								<input type="text" th:field="*{firstName}" placeholder="" class="form-control"/>
+								<span th:if="${#fields.hasErrors('firstName')}">please add your first name</span>
+								</div>
+								</div>
+								-->
+								<div class="form-group">
+									<label for="userName" class="control-label col-xs-3" th:text="#{profile.username}"></label>
+									<div class="col-xs-9">
+										<input type="text" th:field="*{userName}" placeholder="" class="form-control"/>
+										<span id="errorUserName" class="errorMessage"  th:errors="*{userName}"></span> 
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="caption" class="control-label col-xs-3" th:text="#{profile.caption}"></label>
+									<div class="col-xs-9">
+										<textarea th:field="*{caption}" placeholder="" class="form-control"></textarea>
+										<span id="errorCaption" class="errorMessage"  th:errors="*{caption}"></span>
+									</div>
+								</div>
+              <div class="form-group">
+                <div class="col-xs-offset-3">
+                  <button id="publicTabSave" type="submit" class="btn btn-primary" th:text="#{profile.button.save}">
+                  </button>
+                </div>
+              </div>
+                </form>
+							</div>
+							<div th:class="${activeTab} == 'PRIVATE'? tab-pane+' '+active : tab-pane" id="private">
+                <form class="form-horizontal" th:action="@{/profile/individual/private}" th:object="${privateDetails}" role="form" method="POST">
+                  <div class="alert alert-success fade in" role="alert" th:if="${privateDetailsSaveSuccess}">
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                    <span th:text="#{profile.tab.private.save.success}"></span>
+                  </div>
+                  <h2 th:text="#{profile.tab.header.private}"></h2>
+  								<div class="form-group">
+  									<label for="email" class="control-label col-xs-3" th:text="#{profile.email}"></label>
+  									<div class="col-xs-9">
+  										<input type="text" th:field="*{email}" placeholder="" class="form-control"/>
+  										<span id="errorEmail" class="errorMessage" th:errors="*{email}"></span>
+  									</div>
+  								</div>
+  								<div class="form-group">
+  									<label for="firstName" class="control-label col-xs-3" th:text="#{profile.firstName}"></label>
+  									<div class="col-xs-9">
+  										<input type="text" th:field="*{firstName}" placeholder="" class="form-control"/>
+  										<span id="errorFirstName" class="errorMessage" th:errors="*{firstName}"></span>
+  									</div>
+  								</div>
+  								<div class="form-group">
+  									<label for="lastName" class="control-label col-xs-3" th:text="#{profile.lastName}"></label>
+  									<div class="col-xs-9">
+  										<input type="text" th:field="*{lastName}" placeholder="" class="form-control"/>
+  										<span id="errorLastName" class="errorMessage" th:errors="*{lastName}"></span>
+  									</div>
+  								</div>
+  								<div class="form-group">
+  									<label for="address" class="control-label col-xs-3" th:text="#{profile.address}"></label>
+  									<div class="col-xs-9">
+  										<textarea th:field="*{address}" placeholder="" class="form-control"></textarea>
+  										<span id="errorAddress" class="errorMessage"  th:errors="*{address}"></span>
+  									</div>
+  								</div>
+  								
+<!-- 								<div class="form-group"> -->
+<!-- 									<label for="state" class="control-label col-xs-3" th:text="#{profile.state}"></label> -->
+<!-- 									<div class="col-xs-9"> -->
+<!-- 										<input type="text" th:field="*{state}" placeholder="" class="form-control"/> -->
+<!-- 										<span class="errorMessage"  th:if="${#fields.hasErrors('state')}" th:text="#{profile.stateError}"></span> -->
+										<!--
+										<select th:field="*{state}" class="form-control">
+											<option value="Enter new value"><i>Enter new value</i></option>
+											<option value="Enter new value"><i>Enter new value</i></option>
+											<option th:each="state : ${statesList}" th:value="${state.id}" th:text="${state.name}"></option>
+										</select>
+										<input id="stateNewValue" visibility="hidden" placeholder="" class="form-control" />
+										<span class="errorMessage"  th:if="${#fields.hasErrors('state')}">please enter a state name</span>
+										-->
+<!-- 									</div> -->
+<!-- 								</div> -->
+  								<div class="form-group">
+  									<label for="city" class="control-label col-xs-3" th:text="#{profile.city}"></label>
+  									<div class="col-xs-9">
+  										<input th:field="*{city}" placeholder="" class="form-control" />
+  										<span id="errorCity" class="errorMessage" th:errors="*{city}"></span>
+  									</div>
+  								</div>
+  								<div class="form-group">
+										<label for="state" class="control-label col-xs-3" th:text="#{companyProfile.state}"></label>
+										<div class="col-xs-9">
+											<input type="text" th:field="*{state}" placeholder="" class="form-control"/>
+											<span id="errorState" class="errorMessage" th:errors="*{state}"></span>
+										</div>
+								</div>
+  								<div class="form-group">
+  									<label for="zip" class="control-label col-xs-3" th:text="#{profile.zip}"></label>
+  									<div class="col-xs-9">
+  										<input th:field="*{zip}" placeholder="" class="form-control" />
+  										<span id="errorZip" class="errorMessage" th:errors="*{zip}"></span>
+  									</div>
+  								</div>
+  								
+  								<div class="form-group">
+  									<label for="country" class="control-label col-xs-3" th:text="#{profile.country}"></label>
+  									<div class="col-xs-9" th:include="country"></div>
+  								</div>
+  						
+  								<div class="form-group">
+  									<label for="dateOfBirth" class="control-label col-xs-3" th:text="#{profile.dateOfBirth}"></label>
+  									<div class="col-xs-9">
+  										<input th:field="*{dateOfBirth}" placeholder="" class="form-control" />
+  										<span id="errorDateOfBirth" class="errorMessage"  th:errors="*{dateOfBirth}"></span>
+  									</div>
+  								</div>
+  								<div class="form-group">
+  									<label for="phone" class="control-label col-xs-3" th:text="#{profile.phone}"></label>
+  									<div class="col-xs-9">
+  										<input type="text" th:field="*{phone}" placeholder="" class="form-control"/>
+  										<span id="errorPhone" class="errorMessage" th:errors="*{phone}"></span>
+  									</div>
+  								</div>
+                  <div class="form-group">
+                    <div class="col-xs-offset-3">
+                      <button id="privateTabSave" type="submit" class="btn btn-primary" th:text="#{profile.button.save}">
+                      </button>
+                    </div>
+                  </div>
+                </form>
+							</div>              
+						</div>
+					</div>
+				</div>
+		</div>
+	</div>
+</html>

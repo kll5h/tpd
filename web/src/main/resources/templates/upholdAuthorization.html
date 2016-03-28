@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="upholdAuthorization">
+    <br />
+    <br />
+    <br />
+    <br />
+    <form id="authorForm" class="form-horizontal" th:action="@{/uphold/authorize}" role="form" method="GET">
+        <div class="form-group">
+            <div class="col-xs-offset-5">
+                <button class="btn btn-default" type="submit">
+                    <i class="fa fa-sign-in"></i><span th:text="#{uphold.button.singin}">Sign in with Uphold</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+</html>

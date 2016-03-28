@@ -1,0 +1,16 @@
+/.gradle/
+/build/
+/classes/
+/out/
+/.idea/
+/bin/
+/.classpath
+/.project
+/.settings/
+*.iml
+*.tmp
+*.wallet
+*.spvchain
+*.orig
+*.prefs
+/tilepay.zip

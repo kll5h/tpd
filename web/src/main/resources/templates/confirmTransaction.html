@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<div th:fragment="confirmTransaction">
+	
+	<div id="successAlert" class="alert alert-success" role="alert"></div>
+	
+	<div id="reviewTransactionInfo" class="alert alert-info" role="alert" th:text="#{transactionForm.alert.passwordConfirmation}"></div>
+	
+		<h3 th:text="#{transactionForm.transactionDetails}"></h3>
+	
+		<table class="table">
+		  	<tr>
+			  	<th class="col-xs-3" th:text="#{transactionForm.addressFrom}"></th>
+			  	<td th:text="${transactionForm.addressFrom}"></td>
+		  	</tr>
+		  	<tr>
+			  	<th th:text="#{transactionForm.addressTo}"></th>
+			  	<td th:text="${transactionForm.addressTo}"></td>
+		  	</tr>
+		  		<tr>
+			  	<th th:text="#{transactionForm.amount}"></th>
+			  	<td th:text="${transactionForm.amount}"></td>
+		  	</tr>
+		  	<tr>
+			  	<th th:text="#{transactionForm.currency}"></th>
+			  	<td th:text="${transactionForm.asset.name}"></td>
+		  	</tr>
+		  	<tr>
+			  	<th th:text="#{transactionForm.protocol}"></th>
+			  	<td th:text="${transactionForm.asset.protocol}"></td>
+		  	</tr>
+		  		<tr>
+			  	<th th:text="#{transactionForm.minersFee}"></th>
+			  	<td th:text="${transactionForm.minersFee}"></td>
+		  	</tr>
+		</table>
+		<p name="xtcFeeInfo" th:if="${transactionForm.asset.name} == XTC" th:text="#{transactionForm.tileCoinFeeInfo}"></p>
+		
+		<form id="confirmTransactionBack" class="form-horizontal" th:action="@{/wallet}" th:object="${transactionForm}"  role="form" method="POST">
+				<input th:field="*{addressFrom}" type="hidden" class="form-control"/>
+				<input th:field="*{addressTo}" type="hidden" class="form-control"/>
+				<input th:field="*{amount}" type="hidden" class="form-control"/>
+				<input th:field="*{asset}" type="hidden" class="form-control"/>
+				<input th:field="*{minersFee}" type="hidden" class="form-control"/>
+				<div class="col-xs-offset-5">
+					<button type="submit" id="back" class="btn btn-default" th:text="#{transactionForm.button.back}"></button>
+				</div>
+		</form>
+		
+		<form id="sentTransactionBack" class="form-horizontal hidden" th:action="@{/wallet}"  role="form" method="POST">
+				<div class="col-xs-offset-5">
+					<button type="submit" id="back" class="btn btn-default" th:text="#{transactionForm.button.back}"></button>
+				</div>
+		</form>
+		
+		<div id="passwordConfirmationDiv">
+		<h3 th:text="#{transactionForm.passwordConfirmation}"></h3>
+		<table class="table">
+		  	<tr>
+		  	<td>
+			  	<form id="confirmTransaction" class="form-horizontal" th:object="${transactionForm}"  role="form" method="POST">
+					<input type="hidden" th:field="*{asset.protocol}"/>
+					<input th:field="*{addressFrom}" type="hidden" class="form-control"/>
+					<input th:field="*{addressTo}" type="hidden" class="form-control"/>
+					<input th:field="*{amount}" type="hidden" class="form-control"/>
+					<input th:field="*{minersFee}" type="hidden" class="form-control"/>
+					<input th:field="*{asset}" type="hidden" class="form-control"/>
+					<div class="form-group">
+						<label for="password" class="control-label col-xs-2" th:text="#{transactionForm.password}"></label>
+						<div class="col-xs-9">
+							<input type="password" th:field="*{password}" autocomplete="off" th:placeholder="#{transactionForm.password.placeholder}" class="form-control"/>
+							<span id="errorAlert" class="help-block word-break hidden errorMessage"></span>
+						</div>
+					</div>
+					<br/>
+					<div class="form-group">
+						<div class="col-xs-offset-5">
+							<button type="submit" id="confirmSendTx" class="btn btn-primary" th:text="#{transactionForm.button.send}"></button>
+						</div>
+					</div>
+				</form>
+			</td>
+		  	</tr>
+		</table>
+		</div>
+		
+	</div>
+
+</html>

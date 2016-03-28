@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+	<div th:fragment="deviceList">
+	
+	<table class="table table-bordered">
+                    <tr>
+                        <th class="text-center" th:text="#{deviceList.name}">Name</th>
+                        <th class="text-center" th:text="#{deviceList.address}">Address</th>
+                        <th class="text-center" th:text="#{deviceList.IPAddress}">IP</th>
+                        <th class="text-center" th:text="#{deviceList.transaction}">Transaction</th>
+                        <th class="text-center" th:text="#{deviceList.devicePrivateKey}">Private key</th>
+                    </tr>
+                    <tr th:each="device,iterStat: ${devices}">
+                        <td class="text-center" th:text="${device.name}"></td>
+                        <td class="text-center device-address" th:text="${device.address}"></td>
+                       	<td class="text-center" th:text="${device.IPAddress}"></td>
+                       	<td class="text-center"> 
+                       		<a data-th-href="${@blockExplorer.getTransactionUrl(device.txHash)}" target="_blank">
+                       			<span data-th-text="${#strings.abbreviate(device.txHash,15)}"></span>
+                       		</a>
+                       		<p hidden="true" data-th-text="${device.txHash}"></p>
+                       		<p hidden="true" data-th-text="${device.wallet.id}"></p>
+                       	</td>
+                       	<td class="text-center" style="vertical-align:middle">
+							<button class="btn btn-link btn-xs device-private-key-btn" data-toggle="modal" data-target="#passphraseModal">
+							    <i class="fa fa-eye"></i>
+                                <span th:text="#{wallet.button.devicePrivateKey}"></span>
+							</button>
+						</td>
+                    </tr>
+                </table>
+	
+	</div>
+
+</html>

@@ -1,0 +1,60 @@
+buildscript {
+    repositories {
+        maven { url "http://repo.spring.io/libs-release" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'spring-boot'
+
+jar {
+    baseName = 'tilepay'
+    version = tilepayVersion
+    manifest {
+        attributes 'Implementation-Version': tilepayVersion
+    }
+}
+
+springBoot {
+    backupSource = false
+}
+
+dependencies {
+    compile project(':core')
+    compile project(':uphold_client')
+
+    compile "javax.servlet:javax.servlet-api:${javaxServletApiVersion}"
+    compile "org.thymeleaf:thymeleaf-spring4:${thymeleafVersion}"
+
+    compile ("org.springframework.boot:spring-boot:${springBootVersion}") {
+        exclude group: 'commons-logging'
+    }
+    compile ("org.springframework.boot:spring-boot-starter-web:${springBootVersion}") {
+        exclude module: "spring-boot-starter-tomcat"
+    }
+    
+    //runtime "org.springframework.boot:spring-boot-starter-jetty:${springBootVersion}"
+
+    runtime "org.eclipse.jetty:jetty-webapp:${jettyVersion}"
+
+    compile ("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}") {
+        exclude module: "spring-boot-starter-tomcat"
+    }
+    
+    compile ("org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}") {
+        exclude group: 'commons-logging'
+    }
+    
+    compile 'org.apache.httpcomponents:httpclient:${httpclientVersion}'
+    compile 'joda-time:joda-time:2.8.2'
+    //compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+
+    testCompile "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+
+    testCompile ("org.springframework.security:spring-security-test:4.0.2.RELEASE") {
+        exclude module: "spring-boot-starter-tomcat"
+        exclude group: 'commons-logging'
+    }
+}
